@@ -97,12 +97,19 @@
             options: {
                 allowEventDelete: true,
                 eventDelete: function(calEvent, element, dayFreeBusyManager, calendar, clickEvent) {
-                    if (confirm('You want to delete this event?')) {
+
+                    if (confirm('Удалить событие?')) {
+
                         calendar.weekCalendar('removeEvent',calEvent.id);
+
                     }
+
                 },
+
                 deletable: function(calEvent, element) {
+
                     return calEvent.start > Date.today();
+                    
                 }
             },
             events : [
@@ -116,10 +123,12 @@
 
         $(document).ready(function() {
             var $calendar = $('#calendar').weekCalendar({
+                firstDayOfWeek: 1,
                 timeslotsPerHour: 4,
                 scrollToHourMillis : 0,
                 height: function($calendar){
-                    return $(window).height() - $('h1').outerHeight(true);
+                    //return $(window).height() - $('h1').outerHeight(true);
+                    return $(window).height();
                 },
                 eventRender : function(calEvent, $event) {
                     if(calEvent.end.getTime() < new Date().getTime()) {
@@ -128,19 +137,32 @@
                     }
                 },
                 eventNew : function(calEvent, $event) {
-                    alert('Будет добавлен бронь.');
+
+                    confirm('Будет добавлен бронь.');
+
+                    //alert('Будет добавлен бронь.');
+
                 },
                 data: function(start, end, callback) {
+
                     var dataSource = $('#data_source').val();
 
                     if (dataSource === '1') {
+
                         callback(eventData1);
+
                     } else if(dataSource === '2') {
+
                         callback(eventData2);
+
                     } else if(dataSource === '3') {
+
                         callback(eventData3);
+
                     } else {
+
                         callback([]);
+
                     }
                 }
             });
@@ -171,16 +193,18 @@
     </script>
 </head>
 <body>
-<h1>Расписание/планировщик загруженности базы на неделю</h1>
 
-<p class="description">Вы можете бронировать свободные участки времени.</p>
+{{--<h1>Расписание/планировщик загруженности базы на неделю</h1>--}}
 
-<div id="message" class="ui-corner-all"></div>
+{{--<p class="description">Вы можете бронировать свободные участки времени.</p>--}}
 
-<div class="clearer"></div>
+{{--<div id="message" class="ui-corner-all"></div>--}}
+
+{{--<div class="clearer"></div>--}}
+
+<div id="calendar"></div>
 
 <div id="calendar_selection" class="ui-corner-all">
-    <strong>Фильтр по направлениям: </strong>
     <select id="data_source">
         <option value="">Выбрать направление</option>
         <option value="1">Сантехника</option>
@@ -189,6 +213,5 @@
     </select>
 </div>
 
-<div id="calendar"></div>
 </body>
 </html>

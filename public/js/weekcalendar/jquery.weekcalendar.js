@@ -1265,6 +1265,8 @@
         // first, we remove the old hourline if it exists
         $('.wc-hourline', this.element).remove();
 
+        $('.wc-mouse-hourline', this.element).remove();
+
         // the line does not need to be displayed
         if (businessHours.limitDisplay && d.getHours() > businessHours.end) {
           return;
@@ -1281,6 +1283,12 @@
             'class': 'wc-hourline',
             style: 'top: ' + positionTop + 'px; width: ' + lineWidth + 'px'
           })
+        );
+        $('.wc-scrollable-grid .wc-today', this.element).append(
+            $('<div>', {
+              'class': 'wc-mouse-hourline',
+              style: 'top: ' + positionTop + 'px; width: ' + lineWidth + 'px'
+            })
         );
       },
 
@@ -2944,3 +2952,18 @@
     });
 
 })(jQuery);
+
+
+$(document).ready(function () {
+
+  $('body').bind('mousemove', '.wc-scrollable-grid', function(){
+
+    //var pageCoords = "( " + event.pageX + ", " + event.pageY + " )";
+
+    //var clientCoords = "( " + event.clientX + ", " + event.clientY + " )";
+
+    $('.wc-mouse-hourline').css('top', event.pageY - 65 + 'px');
+
+  });
+
+});
