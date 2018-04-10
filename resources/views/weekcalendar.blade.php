@@ -109,7 +109,36 @@
                 deletable: function(calEvent, element) {
 
                     return calEvent.start > Date.today();
-                    
+
+                }
+            },
+            events : [
+                {'id':1, 'start': new Date(year, month, day, 15), 'end': new Date(year, month, day, 13, 15),'title':'Daylux'},
+                {'id':2, 'start': new Date(year, month, day, 9), 'end': new Date(year, month, day, 14, 40),'title':'Daylux'},
+                {'id':3, 'start': new Date(year, month, day + 2, 18), 'end': new Date(year, month, day + 1, 18, 40),'title':'Eco'},
+                {'id':4, 'start': new Date(year, month, day - 2, 8), 'end': new Date(year, month, day - 1, 9, 20),'title':'Airfel'},
+                {'id':5, 'start': new Date(year, month, day, 14), 'end': new Date(year, month, day + 1, 15),'title':'SD'}
+            ]
+        };
+
+        // data set 3 : using event delete features
+        var eventData3 = {
+            options: {
+                allowEventDelete: true,
+                eventDelete: function(calEvent, element, dayFreeBusyManager, calendar, clickEvent) {
+
+                    if (confirm('Удалить событие?')) {
+
+                        calendar.weekCalendar('removeEvent',calEvent.id);
+
+                    }
+
+                },
+
+                deletable: function(calEvent, element) {
+
+                    return calEvent.start > Date.today();
+
                 }
             },
             events : [
@@ -158,6 +187,10 @@
                     } else if(dataSource === '3') {
 
                         callback(eventData3);
+
+                    } else if(dataSource === '4') {
+
+                        callback(eventData4);
 
                     } else {
 
@@ -210,6 +243,7 @@
         <option value="1">Сантехника</option>
         <option value="2">Запорка</option>
         <option value="3">Радиаторы</option>
+        <option value="3">Laravel</option>
     </select>
 </div>
 
