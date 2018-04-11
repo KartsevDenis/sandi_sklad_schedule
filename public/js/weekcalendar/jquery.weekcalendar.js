@@ -100,17 +100,15 @@
         },
         eventResize: function(calEvent, element) {
         },
-        eventNew: function(calEvent, element, dayFreeBusyManager, 
-                                                    calendar, mouseupEvent) {
+        eventNew: function(calEvent, element, dayFreeBusyManager, calendar, mouseupEvent) {
         },
         eventMouseover: function(calEvent, $event) {
         },
         eventMouseout: function(calEvent, $event) {
         },
-        eventDelete: function(calEvent, element, dayFreeBusyManager, 
-                                                      calendar, clickEvent) {
+        eventDelete: function(calEvent, element, dayFreeBusyManager, calendar, clickEvent) {
             calendar.weekCalendar('removeEvent',calEvent.id);
-	},
+	    },
         calendarBeforeLoad: function(calendar) {
         },
         calendarAfterLoad: function(calendar) {

@@ -22,3 +22,5 @@ Route::get('schedule', function () {
 Route::get('weekcalendar', function () {
     return view('weekcalendar');
 });
+
+Route::get('event', 'EventController@event')->name('event');

@@ -150,6 +150,13 @@
             ]
         };
 
+        var eventData4 = {
+            events : [
+                {'id':1, 'start': new Date(year, month, day, 7, 0), 'end': new Date(year, month, day, 9, 15),'title':'Тест 1'},
+                {'id':2, 'start': new Date(year, month, day, 10, 0), 'end': new Date(year, month, day, 13, 45),'title':'Тест 2'},
+            ]
+        };
+
         $(document).ready(function() {
             var $calendar = $('#calendar').weekCalendar({
                 firstDayOfWeek: 1,
@@ -160,17 +167,74 @@
                     return $(window).height();
                 },
                 eventRender : function(calEvent, $event) {
-                    if(calEvent.end.getTime() < new Date().getTime()) {
-                        $event.css('backgroundColor', '#aaa');
-                        $event.find('.time').css({'backgroundColor': '#999', 'border':'1px solid #888'});
+
+                    var status = get_event_time_status(calEvent);
+
+                    if(status < 0) {
+
+                        $event.addClass('past-event');
+
                     }
+
+                    if(status == 0) {
+
+                        $event.addClass('active-event');
+
+                    }
+
+                    if(status > 0) {
+
+                        $event.addClass('last-event');
+
+                    }
+
+                },
+                eventDrag: function(calEvent, $event) {
+
+                    var status = get_event_time_status(calEvent);
+
+                    console.log(status);
+
+                    if ( status > 0 ) {
+
+
+
+                    } else {
+
+
+
+                    }
+
                 },
                 eventNew : function(calEvent, $event) {
 
-                    confirm('Будет добавлен бронь.');
+                    var status = get_event_time_status(calEvent);
 
-                    //alert('Будет добавлен бронь.');
+                    if ( status > 0 ) {
 
+                        if (confirm('Добавить событие?')) {
+
+                            console.log(calEvent.start + ' ' + calEvent.end + ' добавлено');
+
+                        } else {
+
+                            console.log(calEvent.start + ' ' + calEvent.end + ' не добавлено');
+
+                            $calendar.weekCalendar('removeEvent',calEvent.id);
+
+                        }
+
+                    } else {
+
+                        alert('Вы не можете создавать события на прошедшее время!');
+
+                        $calendar.weekCalendar('removeEvent',calEvent.id);
+
+                    }
+
+                },
+                eventClick : function(calEvent, $event) {
+                    console.log(calEvent.title);
                 },
                 data: function(start, end, callback) {
 
@@ -214,6 +278,8 @@
                         //$('#message').text('Displaying event data set 2 with timeslots per hour of 3 and timeslot height of 30px');
                     } else if(dataSource === '3') {
                         //$('#message').text('Displaying event data set 3 with allowEventDelete enabled. Events before today will not be deletable. A confirmation dialog is opened when you delete an event.');
+                    } else if(dataSource === '4') {
+                        //$('#message').text('Displaying event data set 3 with allowEventDelete enabled. Events before today will not be deletable. A confirmation dialog is opened when you delete an event.');
                     } else {
                         //$('#message').text('Displaying no events.');
                     }
@@ -222,6 +288,33 @@
             }
 
             updateMessage();
+
+            function get_event_time_status(calEvent) {
+
+                var now = new Date().getTime(),
+                        end = calEvent.end.getTime(),
+                        start = calEvent.end.getTime();
+
+                if(end < now) {
+
+                    return -1;
+
+                }
+
+                if( (start < now) && (end > now) ) {
+
+                    return 0;
+
+                }
+
+                if(start > now) {
+
+                    return 1;
+
+                }
+
+            }
+
         });
     </script>
 </head>
@@ -243,7 +336,7 @@
         <option value="1">Сантехника</option>
         <option value="2">Запорка</option>
         <option value="3">Радиаторы</option>
-        <option value="3">Laravel</option>
+        <option value="4">Laravel</option>
     </select>
 </div>
 

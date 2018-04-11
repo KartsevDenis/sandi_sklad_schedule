@@ -8,10 +8,16 @@ use Carbon\Carbon;
 class EventController extends Controller
 {
 
-    public function index()
+    public function event()
     {
 
         $now = Carbon::now();
+
+        $now->timezone = 'Europe/Kiev';
+
+        //$now->month($now->month + 1);
+
+        dd($now->hour->format('D M d Y h:i:s O'));
 
         //{'id':1, 'start': new Date(year, month, day, 12), 'end': new Date(year, month, day, 13, 30),'title':'Potato'},
 
