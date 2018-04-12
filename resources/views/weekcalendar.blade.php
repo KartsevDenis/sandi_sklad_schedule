@@ -62,6 +62,8 @@
     <script type='text/javascript'>
 
 
+        window.temp_event = '';
+
         var year = new Date().getFullYear();
         var month = new Date().getMonth();
         var day = new Date().getDate();
@@ -193,17 +195,31 @@
 
                     var status = get_event_time_status(calEvent);
 
-                    console.log(status);
+                    console.log('eventDrag, status - ' + status);
 
-                    if ( status > 0 ) {
+                },
+                eventDrop: function(calEvent, $event) {
 
+                    var status = get_event_time_status(calEvent);
 
+                    if ( status == -1 ) {
 
-                    } else {
-
-
+                        $calendar.weekCalendar('removeEvent',calEvent.id);
 
                     }
+
+                    console.log('eventDrop, status - ' + status);
+
+                },
+                eventMouseover: function(calEvent, $event) {
+
+                    var status = get_event_time_status(calEvent);
+
+                    console.log('eventMouseover, status - ' + status);
+
+                    window.temp_event['calEvent'] = calEvent;
+
+                    window.temp_event['event'] = $event;
 
                 },
                 eventNew : function(calEvent, $event) {
