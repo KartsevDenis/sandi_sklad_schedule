@@ -49,7 +49,7 @@
         timeSeparator: ' до ',
         startParam: 'Начало',
         endParam: 'Конец',
-        businessHours: {start: 7, end: 18, limitDisplay: true},
+        businessHours: {start: 6, end: 23, limitDisplay: true},
         newEventText: 'Бронь',
         timeslotHeight: 20,
         defaultEventLength: 2,
@@ -2950,18 +2950,3 @@
     });
 
 })(jQuery);
-
-
-$(document).ready(function () {
-
-  $('body').bind('mousemove', '.wc-scrollable-grid', function(){
-
-    //var pageCoords = "( " + event.pageX + ", " + event.pageY + " )";
-
-    //var clientCoords = "( " + event.clientX + ", " + event.clientY + " )";
-
-    $('.wc-mouse-hourline').css('top', event.pageY - 65 + 'px');
-
-  });
-
-});

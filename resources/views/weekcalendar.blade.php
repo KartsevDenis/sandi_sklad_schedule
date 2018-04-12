@@ -62,7 +62,7 @@
     <script type='text/javascript'>
 
 
-        window.temp_event = '';
+        window.temp_event = {};
 
         var year = new Date().getFullYear();
         var month = new Date().getMonth();
@@ -160,6 +160,15 @@
         };
 
         $(document).ready(function() {
+
+              $('body').bind('mousemove', '.wc-scrollable-grid', function() {
+
+                var y = 65 + $(window).scrollTop();
+
+                $('.wc-mouse-hourline').css('top', event.pageY - y  + 'px');
+
+              });
+
             var $calendar = $('#calendar').weekCalendar({
                 firstDayOfWeek: 1,
                 timeslotsPerHour: 4,
@@ -193,9 +202,7 @@
                 },
                 eventDrag: function(calEvent, $event) {
 
-                    var status = get_event_time_status(calEvent);
 
-                    console.log('eventDrag, status - ' + status);
 
                 },
                 eventDrop: function(calEvent, $event) {
@@ -204,11 +211,14 @@
 
                     if ( status == -1 ) {
 
-                        $calendar.weekCalendar('removeEvent',calEvent.id);
+                        calEvent.start = window.temp_event.calEvent.start;
+                        calEvent.end = window.temp_event.calEvent.end;
+
+                        console.log(calEvent);
 
                     }
 
-                    console.log('eventDrop, status - ' + status);
+                    console.log('eventDrop, status ' + status);
 
                 },
                 eventMouseover: function(calEvent, $event) {
@@ -217,12 +227,18 @@
 
                     console.log('eventMouseover, status - ' + status);
 
-                    window.temp_event['calEvent'] = calEvent;
+                    window.temp_event.calEvent = calEvent;
 
-                    window.temp_event['event'] = $event;
+                    window.temp_event.event = $event;
+
+                    console.log(window.temp_event.calEvent);
 
                 },
                 eventNew : function(calEvent, $event) {
+
+                    var date = new Date;
+
+                    calEvent.id = date.getMilliseconds();
 
                     var status = get_event_time_status(calEvent);
 
