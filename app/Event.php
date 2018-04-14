@@ -8,11 +8,30 @@ class Event extends Model
 {
     protected $guarded = [];
 
-    public static function getEvents() {
+//[id] => 5
+//[start] => 2018-04-13T07:15:00.000Z
+//[end] => 2018-04-13T16:15:00.000Z
+//[title] => SD
 
-        $events = [];
+    public static function event_change($data) {
 
-        return $events;
+        return self::updateOrCreate(
+            ['id' => $data['id']],
+            [
+                'id' => $data['id'],
+                'user_id' => 1,
+                'start' => $data['start'],
+                'end' => $data['end'],
+                'title' => $data['title'],
+                'description' => '',
+            ]
+        );
+
+    }
+
+    public static function event_get_all() {
+
+        return self::all();
 
     }
 

@@ -11,6 +11,8 @@
 |
 */
 
+/*PAGES*/
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -23,4 +25,12 @@ Route::get('weekcalendar', function () {
     return view('weekcalendar');
 });
 
+/*FUNCTIONS*/
+
 Route::get('event', 'EventController@event')->name('event');
+
+Route::get('events', 'EventController@events')->name('events');
+
+Route::post('events-ajax', 'EventController@events_ajax')->name('events_ajax');
+
+Route::post('event-change', 'EventController@event_change')->name('event_change');
