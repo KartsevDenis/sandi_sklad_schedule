@@ -63,6 +63,7 @@
     <script type="text/javascript" src="js/weekcalendar/libs/date.js"></script>
     <script type='text/javascript' src='js/weekcalendar/jquery.weekcalendar.js'></script>
     <script type='text/javascript' src='js/weekcalendar/init.js'></script>
+
 </head>
 
 <body>

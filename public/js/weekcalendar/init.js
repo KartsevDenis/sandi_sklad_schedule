@@ -29,9 +29,7 @@ function event_ajax(calEvent) {
 
 }
 
-function event_get_all() {
-
-    var result = '';
+function load_all_events_ajax(callback) {
 
     $.ajax({
         url: '/events-ajax',
@@ -39,160 +37,21 @@ function event_get_all() {
         data: { _token: CSRF_TOKEN},
         success: function (data) {
 
-            console.log(data);
-
-            new_event(data);
+            callback(own(data['own']));
+            callback(editor(data['editor']));
+            callback(other(data['other']));
+            callback(own(data['own']));
 
         },
         error: function (xhr, ajaxOptions, thrownError) {
 
             console.log("Ошибка!", "Произошла ошибка event_get_all", "error");
 
-            result = 'Произошла ошибка event_get_all';
-
         }
     });
 
 }
 
-var year = new Date().getFullYear();
-var month = new Date().getMonth();
-var day = new Date().getDate();
-
-var eventData1 = {
-    options: {
-        timeslotsPerHour: 4,
-        timeslotHeight: 20
-    },
-    events : [
-        {'id':1, 'start': new Date(year, month, day, 12), 'end': new Date(year, month, day, 13, 30),'title':'Potato'},
-        {'id':2, 'start': new Date(year, month, day, 14), 'end': new Date(year, month, day, 14, 45),'title':'Oras'},
-        {'id':3, 'start': new Date(year, month, day + 1, 18), 'end': new Date(year, month, day + 1, 18, 45),'title':'Grohe'},
-        {'id':4, 'start': new Date(year, month, day - 1, 8), 'end': new Date(year, month, day - 1, 9, 30),'title':'Cosh'},
-        {'id':5, 'start': new Date(year, month, day + 1, 14), 'end': new Date(year, month, day + 1, 15),'title':'Q-Tap'}
-    ]
-};
-
-var eventData2 = {
-    options: {
-        timeslotsPerHour: 3,
-        timeslotHeight: 30
-    },
-    events : [
-        {'id':1, 'start': new Date(year, month, day, 12), 'end': new Date(year, month, day, 10, 10),'title':'ICMA'},
-        {'id':2, 'start': new Date(year, month, day, 14), 'end': new Date(year, month, day, 14, 40),'title':'SD'},
-    ]
-};
-
-
-// data set 3 : using event delete features
-var eventData3 = {
-    options: {
-        allowEventDelete: true,
-        eventDelete: function(calEvent, element, dayFreeBusyManager, calendar, clickEvent) {
-
-            if (confirm('Удалить событие?')) {
-
-                calendar.weekCalendar('removeEvent',calEvent.id);
-
-            }
-
-        },
-
-        deletable: function(calEvent, element) {
-
-            return calEvent.start > Date.today();
-
-        }
-    },
-    events : [
-        {'id':1, 'start': new Date(year, month, day, 15), 'end': new Date(year, month, day, 13, 15),'title':'Daylux'},
-        {'id':2, 'start': new Date(year, month, day, 9), 'end': new Date(year, month, day, 14, 40),'title':'Daylux'},
-        {'id':3, 'start': new Date(year, month, day + 2, 18), 'end': new Date(year, month, day + 1, 18, 40),'title':'Eco'},
-        {'id':4, 'start': new Date(year, month, day - 2, 8), 'end': new Date(year, month, day - 1, 9, 20),'title':'Airfel'},
-        {'id':5, 'start': new Date(year, month, day, 14), 'end': new Date(year, month, day + 1, 15),'title':'SD'}
-    ]
-};
-
-// data set 3 : using event delete features
-var eventData3 = {
-    options: {
-        allowEventDelete: true,
-        eventDelete: function(calEvent, element, dayFreeBusyManager, calendar, clickEvent) {
-
-            if (confirm('Удалить событие?')) {
-
-                calendar.weekCalendar('removeEvent',calEvent.id);
-
-            }
-
-        },
-
-        deletable: function(calEvent, element) {
-
-            return calEvent.start > Date.today();
-
-        }
-    },
-    events : [
-        {'id':1, 'start': new Date(year, month, day, 15), 'end': new Date(year, month, day, 13, 15),'title':'Daylux'},
-        {'id':2, 'start': new Date(year, month, day, 9), 'end': new Date(year, month, day, 14, 40),'title':'Daylux'},
-        {'id':3, 'start': new Date(year, month, day + 2, 18), 'end': new Date(year, month, day + 1, 18, 40),'title':'Eco'},
-        {'id':4, 'start': new Date(year, month, day - 2, 8), 'end': new Date(year, month, day - 1, 9, 20),'title':'Airfel'},
-        {'id':5, 'start': new Date(year, month, day, 14), 'end': new Date(year, month, day + 1, 15),'title':'SD'}
-    ]
-};
-
-var eventData4 = {
-    options: {
-        allowEventDelete: true,
-        eventDelete: function(calEvent, element, dayFreeBusyManager, calendar, clickEvent) {
-
-            if (confirm('Удалить событие?')) {
-
-                calendar.weekCalendar('removeEvent',calEvent.id);
-
-            }
-
-        },
-
-        deletable: function(calEvent, element) {
-
-            return calEvent.start > Date.today();
-
-        }
-    },
-};
-
-function new_event(events) {
-
-    var eventData = {
-        options: {
-            allowEventDelete: true,
-            eventDelete: function(calEvent, element, dayFreeBusyManager, calendar, clickEvent) {
-
-                if (confirm('Удалить событие?')) {
-
-                    calendar.weekCalendar('removeEvent',calEvent.id);
-
-                }
-
-            },
-
-            deletable: function(calEvent, element) {
-
-                return calEvent.start > Date.today();
-
-            }
-        },
-        events: events
-    };
-
-    console.log(eventData);
-
-    $calendar.weekCalendar('newEvent',eventData);
-
-}
 
 $(document).ready(function() {
 
@@ -311,33 +170,8 @@ $(document).ready(function() {
         },
         data: function(start, end, callback) {
 
-            var dataSource = $('#data_source').val();
+            load_all_events_ajax(callback);
 
-            if (dataSource === '1') {
-
-                callback(eventData1);
-
-            } else if(dataSource === '2') {
-
-                console.log(eventData2);
-
-                callback(eventData2);
-
-            } else if(dataSource === '3') {
-
-                console.log(eventData3);
-
-                callback(eventData3);
-
-            } else if(dataSource === '4') {
-
-                event_get_all();
-
-            } else {
-
-                callback([]);
-
-            }
         }
     });
 
@@ -393,3 +227,147 @@ $(document).ready(function() {
     }
 
 });
+
+function own(data) {
+
+    var events = {
+        options: {
+            allowEventDelete: true,
+            eventDelete: function(calEvent, element, dayFreeBusyManager, calendar, clickEvent) {
+
+                if (confirm('Удалить событие?')) {
+
+                    calendar.weekCalendar('removeEvent',calEvent.id);
+
+                }
+
+            },
+
+            deletable: function(calEvent, element) {
+
+                return calEvent.start > Date.today();
+
+            }
+        },
+        events : data
+    };
+
+    return events;
+
+}
+
+function other(data) {
+
+    var events = {
+
+        events : data
+
+    };
+
+    return events;
+
+}
+
+function editor(data) {
+
+    var events = {
+
+        events : data
+
+    };
+
+    return events;
+
+}
+
+// var year = new Date().getFullYear();
+// var month = new Date().getMonth();
+// var day = new Date().getDate();
+//
+// var eventData1 = {
+//     options: {
+//         timeslotsPerHour: 4,
+//         timeslotHeight: 20
+//     },
+//     events : [
+//         {'id':1, 'start': new Date(year, month, day, 12), 'end': new Date(year, month, day, 13, 30),'title':'Potato'},
+//         {'id':2, 'start': new Date(year, month, day, 14), 'end': new Date(year, month, day, 14, 45),'title':'Oras'},
+//         {'id':3, 'start': new Date(year, month, day + 1, 18), 'end': new Date(year, month, day + 1, 18, 45),'title':'Grohe'},
+//         {'id':4, 'start': new Date(year, month, day - 1, 8), 'end': new Date(year, month, day - 1, 9, 30),'title':'Cosh'},
+//         {'id':5, 'start': new Date(year, month, day + 1, 14), 'end': new Date(year, month, day + 1, 15),'title':'Q-Tap'}
+//     ]
+// };
+//
+// var eventData2 = {
+//     options: {
+//         timeslotsPerHour: 3,
+//         timeslotHeight: 30
+//     },
+//     events : [
+//         {'id':1, 'start': new Date(year, month, day, 12), 'end': new Date(year, month, day, 10, 10),'title':'ICMA'},
+//         {'id':2, 'start': new Date(year, month, day, 14), 'end': new Date(year, month, day, 14, 40),'title':'SD'},
+//     ]
+// };
+//
+//
+// // data set 3 : using event delete features
+// var eventData3 = {
+//     options: {
+//         allowEventDelete: true,
+//         eventDelete: function(calEvent, element, dayFreeBusyManager, calendar, clickEvent) {
+//
+//             if (confirm('Удалить событие?')) {
+//
+//                 calendar.weekCalendar('removeEvent',calEvent.id);
+//
+//             }
+//
+//         },
+//
+//         deletable: function(calEvent, element) {
+//
+//             return calEvent.start > Date.today();
+//
+//         }
+//     },
+//     events : [
+//         {'id':1, 'start': new Date(year, month, day, 15), 'end': new Date(year, month, day, 13, 15),'title':'Daylux'},
+//         {'id':2, 'start': new Date(year, month, day, 9), 'end': new Date(year, month, day, 14, 40),'title':'Daylux'},
+//         {'id':3, 'start': new Date(year, month, day + 2, 18), 'end': new Date(year, month, day + 1, 18, 40),'title':'Eco'},
+//         {'id':4, 'start': new Date(year, month, day - 2, 8), 'end': new Date(year, month, day - 1, 9, 20),'title':'Airfel'},
+//         {'id':5, 'start': new Date(year, month, day, 14), 'end': new Date(year, month, day + 1, 15),'title':'SD'}
+//     ]
+// };
+//
+// // data set 3 : using event delete features
+// var eventData3 = {
+//
+//     events : [
+//         {'id':1, 'start': new Date(year, month, day, 15), 'end': new Date(year, month, day, 13, 15),'title':'Daylux'},
+//         {'id':2, 'start': new Date(year, month, day, 9), 'end': new Date(year, month, day, 14, 40),'title':'Daylux'},
+//         {'id':3, 'start': new Date(year, month, day + 2, 18), 'end': new Date(year, month, day + 1, 18, 40),'title':'Eco'},
+//         {'id':4, 'start': new Date(year, month, day - 2, 8), 'end': new Date(year, month, day - 1, 9, 20),'title':'Airfel'},
+//         {'id':5, 'start': new Date(year, month, day, 14), 'end': new Date(year, month, day + 1, 15),'title':'SD'}
+//     ]
+// };
+//
+// var eventData4 = {
+//     options: {
+//         allowEventDelete: true,
+//         eventDelete: function(calEvent, element, dayFreeBusyManager, calendar, clickEvent) {
+//
+//             if (confirm('Удалить событие?')) {
+//
+//                 calendar.weekCalendar('removeEvent',calEvent.id);
+//
+//             }
+//
+//         },
+//
+//         deletable: function(calEvent, element) {
+//
+//             return calEvent.start > Date.today();
+//
+//         }
+//     },
+// };
