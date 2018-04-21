@@ -121,8 +121,11 @@
 }
 
 .wc-cal-event.ui-corner-all.locked {
-    background-image: url(/images/lock.svg);
+    background-image: url(images/lock.svg);
     background-size: 25%;
     background-repeat: no-repeat;
     background-position: center;
+    cursor: default;
 }
+
+.wc-title p {line-height: 5px;}

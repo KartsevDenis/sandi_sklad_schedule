@@ -9,7 +9,7 @@
 
     <link rel='stylesheet' type='text/css' href='css/weekcalendar/libs/css/smoothness/jquery-ui-1.8.11.custom.css' />
     <link rel='stylesheet' type='text/css' href='css/weekcalendar/jquery.weekcalendar.css' />
-    <link rel="stylesheet" type="text/css" href="css/weekcalendar/skins/default.css" />
+    <link rel="stylesheet" type="text/css" href="css/default.css" />
     <style type='text/css'>
         body {
             font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
@@ -78,15 +78,15 @@
 
 <div id="calendar"></div>
 
-<div id="calendar_selection" class="ui-corner-all">
-    <select id="data_source">
-        <option value="">Выбрать направление</option>
-        <option value="1">Сантехника</option>
-        <option value="2">Запорка</option>
-        <option value="3">Радиаторы</option>
-        <option value="4">Laravel</option>
-    </select>
-</div>
+{{--<div id="calendar_selection" class="ui-corner-all">--}}
+    {{--<select id="data_source">--}}
+        {{--<option value="">Выбрать направление</option>--}}
+        {{--<option value="1">Сантехника</option>--}}
+        {{--<option value="2">Запорка</option>--}}
+        {{--<option value="3">Радиаторы</option>--}}
+        {{--<option value="4">Laravel</option>--}}
+    {{--</select>--}}
+{{--</div>--}}
 
 </body>
 </html>

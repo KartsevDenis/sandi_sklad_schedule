@@ -29,6 +29,30 @@ function event_ajax(calEvent) {
 
 }
 
+function event_delete_ajax(id) {
+
+    $.ajax({
+        url: '/event-delete',
+        type: "POST",
+        data: {
+            _token: CSRF_TOKEN,
+            id: id,
+        },
+        dataType: "html",
+        success: function () {
+
+            console.log('event_delete_ajax success')
+
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+
+            console.log("Ошибка!", "Произошла ошибка event_ajax", "error");
+
+        }
+    });
+
+}
+
 function load_all_events_ajax(callback) {
 
     $.ajax({
@@ -37,10 +61,39 @@ function load_all_events_ajax(callback) {
         data: { _token: CSRF_TOKEN},
         success: function (data) {
 
-            callback(own(data['own']));
-            callback(editor(data['editor']));
-            callback(other(data['other']));
-            callback(own(data['own']));
+            var eventData = {
+                options: {
+
+                    allowEventDelete: true,
+                    // eventDelete: function(calEvent, element, dayFreeBusyManager, calendar, clickEvent) {
+                    //
+                    //     if (confirm('Удалить событие?')) {
+                    //
+                    //         calendar.weekCalendar('removeEvent',calEvent.id);
+                    //
+                    //     }
+                    //
+                    // },
+                    deletable: function(calEvent, element) {
+
+                        return calEvent.deletable;
+
+                    },
+
+                    resizable: function(calEvent, element) {
+
+                        return calEvent.resizable;
+
+                    },
+                    draggable: function(calEvent, element) {
+                        return calEvent.draggable;
+                    },
+
+                },
+                events: data,
+            };
+
+            callback(eventData);
 
         },
         error: function (xhr, ajaxOptions, thrownError) {
@@ -75,98 +128,39 @@ $(document).ready(function() {
         },
         eventRender : function(calEvent, $event) {
 
-            var status = get_event_time_status(calEvent);
-
-            if(status < 0) {
-
-                $event.addClass('past-event');
-
-            }
-
-            if(status == 0) {
-
-                $event.addClass('active-event');
-
-            }
-
-            if(status > 0) {
-
-                $event.addClass('last-event');
-
-            }
+            event_render(calEvent, $event);
 
         },
-        eventDrag: function(calEvent, $event) {
+        eventDrag: function(calEvent, $event) {},
+        eventResize: function(calEvent, $event) {
 
-
+            event_resize(calEvent, $event);
 
         },
         eventDrop: function(calEvent, $event) {
 
-            var status = get_event_time_status(calEvent);
-
-            if ( status == -1 ) {
-
-                calEvent.start = window.temp_event.calEvent.start;
-                calEvent.end = window.temp_event.calEvent.end;
-
-                console.log(calEvent);
-
-            } else {
-
-                event_ajax(calEvent);
-
-            }
-
-            console.log('eventDrop, status ' + status);
+            event_drop(calEvent, $event);
 
         },
         eventMouseover: function(calEvent, $event) {
 
-            var status = get_event_time_status(calEvent);
-
-            console.log('eventMouseover, status - ' + status);
-
-            window.temp_event.calEvent = calEvent;
-
-            window.temp_event.event = $event;
-
-            console.log(window.temp_event.calEvent);
+            event_mouseover(calEvent, $event);
 
         },
         eventNew : function(calEvent, $event) {
 
-            var date = new Date;
+            event_new(calEvent, $event);
 
-            calEvent.id = date.getMilliseconds();
+        },
+        eventDelete : function(calEvent, $event) {
 
-            var status = get_event_time_status(calEvent);
-
-            if ( status > 0 ) {
-
-                if (confirm('Добавить событие?')) {
-
-                    event_ajax(calEvent);
-
-                } else {
-
-                    console.log(calEvent.start + ' ' + calEvent.end + ' не добавлено');
-
-                    $calendar.weekCalendar('removeEvent',calEvent.id);
-
-                }
-
-            } else {
-
-                alert('Вы не можете создавать события на прошедшее время!');
-
-                $calendar.weekCalendar('removeEvent',calEvent.id);
-
-            }
+            event_delete(calEvent, $event);
 
         },
         eventClick : function(calEvent, $event) {
-            console.log(calEvent.title);
+
+            event_click(calEvent, $event);
+
         },
         data: function(start, end, callback) {
 
@@ -200,6 +194,142 @@ $(document).ready(function() {
 
     updateMessage();
 
+    function event_delete(calEvent, $event) {
+
+        if (confirm('Удалить событие?')) {
+
+            event_delete_ajax(calEvent.id);
+
+            $calendar.weekCalendar('removeEvent',calEvent.id);
+
+        }
+
+    }
+
+    function event_drop(calEvent, $event) {
+
+        var status = get_event_time_status(calEvent);
+
+        if ( status == -1 ) {
+
+            calEvent.start = window.temp_event.calEvent.start;
+            calEvent.end = window.temp_event.calEvent.end;
+
+        } else {
+
+            event_ajax(calEvent);
+
+        }
+
+    }
+
+    function event_click(calEvent, $event) {}
+
+    function event_resize(calEvent, $event) {
+
+        var status = get_event_time_status(calEvent);
+
+        if ( status == -1 ) {
+
+            calEvent.start = window.temp_event.calEvent.start;
+            calEvent.end = window.temp_event.calEvent.end;
+
+        } else {
+
+            event_ajax(calEvent);
+
+        }
+
+    }
+
+    function event_render(calEvent, $event) {
+
+        var status = get_event_time_status(calEvent);
+
+        if (calEvent.locked) {
+
+            $event.addClass('locked');
+
+        }
+
+        if(status < 0) {
+
+            $event.addClass('past-event');
+
+        }
+
+        if(status == 0) {
+
+            $event.addClass('active-event');
+
+        }
+
+        if(status > 0) {
+
+            $event.addClass('last-event');
+
+        }
+
+    }
+
+    function event_mouseover(calEvent, $event) {
+
+        var status = get_event_time_status(calEvent);
+
+        console.log('eventMouseover, status - ' + status);
+
+        window.temp_event.calEvent = calEvent;
+
+        window.temp_event.event = $event;
+
+        console.log(window.temp_event.calEvent);
+
+    }
+
+    function event_new(calEvent, $event) {
+
+        var date = new Date;
+
+        calEvent.id = date.getMilliseconds();
+
+        var status = get_event_time_status(calEvent);
+
+        if ( status > 0 ) {
+
+            if (confirm('Добавить событие?')) {
+
+                var description = prompt("Введите описание события", "")
+
+                if (description != null) {
+
+                    calEvent.description = description;
+
+                    if( event_ajax(calEvent) ) {
+
+                        $calendar.weekCalendar('refresh');
+
+                    }
+
+                }
+
+            } else {
+
+                console.log(calEvent.start + ' ' + calEvent.end + ' не добавлено');
+
+                $calendar.weekCalendar('removeEvent',calEvent.id);
+
+            }
+
+        } else {
+
+            alert('Вы не можете создавать события на прошедшее время!');
+
+            $calendar.weekCalendar('removeEvent',calEvent.id);
+
+        }
+
+    }
+
     function get_event_time_status(calEvent) {
 
         var now = new Date().getTime(),
@@ -228,57 +358,7 @@ $(document).ready(function() {
 
 });
 
-function own(data) {
 
-    var events = {
-        options: {
-            allowEventDelete: true,
-            eventDelete: function(calEvent, element, dayFreeBusyManager, calendar, clickEvent) {
-
-                if (confirm('Удалить событие?')) {
-
-                    calendar.weekCalendar('removeEvent',calEvent.id);
-
-                }
-
-            },
-
-            deletable: function(calEvent, element) {
-
-                return calEvent.start > Date.today();
-
-            }
-        },
-        events : data
-    };
-
-    return events;
-
-}
-
-function other(data) {
-
-    var events = {
-
-        events : data
-
-    };
-
-    return events;
-
-}
-
-function editor(data) {
-
-    var events = {
-
-        events : data
-
-    };
-
-    return events;
-
-}
 
 // var year = new Date().getFullYear();
 // var month = new Date().getMonth();

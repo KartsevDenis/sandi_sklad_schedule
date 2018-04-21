@@ -35,6 +35,8 @@ Route::post('events-ajax', 'EventController@events_ajax')->name('events_ajax');
 
 Route::post('event-change', 'EventController@event_change')->name('event_change');
 
+Route::post('event-delete', 'EventController@event_delete')->name('event_delete');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

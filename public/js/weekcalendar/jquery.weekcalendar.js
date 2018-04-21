@@ -107,7 +107,7 @@
         eventMouseout: function(calEvent, $event) {
         },
         eventDelete: function(calEvent, element, dayFreeBusyManager, calendar, clickEvent) {
-            calendar.weekCalendar('removeEvent',calEvent.id);
+            //calendar.weekCalendar('removeEvent',calEvent.id);
 	    },
         calendarBeforeLoad: function(calendar) {
         },

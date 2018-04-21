@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Auth;
 
 class Event extends Model
 {
@@ -19,11 +20,11 @@ class Event extends Model
             ['id' => $data['id']],
             [
                 'id' => $data['id'],
-                'user_id' => 1,
+                'user_id' => auth()->user()->id,
                 'start' => $data['start'],
                 'end' => $data['end'],
                 'title' => $data['title'],
-                'description' => '',
+                'description' => $data['description'],
             ]
         );
 
@@ -32,6 +33,12 @@ class Event extends Model
     public static function event_get_all() {
 
         return self::all();
+
+    }
+
+    public static function event_delete($id) {
+
+        return self::where('id', '=', $id)->delete();
 
     }
 

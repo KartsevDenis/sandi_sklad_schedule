@@ -17,33 +17,41 @@ class EventController extends Controller
 
     public function events_ajax() {
 
-        $result = [
-
-            'own' => [],
-
-            'other' => [],
-
-            'editor' => [],
-
-        ];
-
         $events = Event::event_get_all();
 
         foreach ($events as $key => $event) {
 
-            if (1 == $event['user_id']) {
+            if ( auth()->check() && auth()->user()->id == $event['user_id'] ) {
 
-                $result['own'][] = $event;
+                $events[$key]['locked'] = false;
+                $events[$key]['deletable'] = true;
+                $events[$key]['draggable'] = true;
+                $events[$key]['resizable'] = true;
 
             } else {
 
-                $result['other'][] = $event;
+                $events[$key]['locked'] = true;
+                $events[$key]['deletable'] = false;
+                $events[$key]['draggable'] = false;
+                $events[$key]['resizable'] = false;
 
             }
 
+            $events[$key]['title'] = '<p>' . auth()->user()->department . '</p><p>' . $event['description'] . '</p><p>' . auth()->user()->name . '</p><p>' . auth()->user()->email . '</p>';
+
         }
 
-        return response()->json($result);
+        return response()->json($events);
+
+    }
+
+    public function event_delete(Request $request) {
+
+        $post = $request->input();
+
+        $id = collect(json_decode( $post['id'] ));
+
+        Event::event_delete($id);
 
     }
 
